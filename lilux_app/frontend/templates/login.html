@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Connexion - Lilux{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <h2 class="text-center mb-4">
+                <span class="logo-text">Lilux</span>
+                <small class="text-muted d-block">Plateforme de Trading</small>
+            </h2>
+        </div>
+        
+        <form id="loginForm" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="username" class="form-label">Nom d'utilisateur</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+                <div class="invalid-feedback">
+                    Veuillez saisir votre nom d'utilisateur.
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="password" class="form-label">Mot de passe</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+                <div class="invalid-feedback">
+                    Veuillez saisir votre mot de passe.
+                </div>
+            </div>
+            
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg" id="loginBtn">
+                    <span class="btn-text">Se connecter</span>
+                    <span class="spinner-border spinner-border-sm d-none" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </span>
+                </button>
+            </div>
+        </form>
+        
+        <div class="alert alert-danger d-none" id="loginError" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span id="errorMessage">Nom d'utilisateur ou mot de passe incorrect.</span>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('loginForm').addEventListener('submit', handleLogin);
+</script>
+{% endblock %}

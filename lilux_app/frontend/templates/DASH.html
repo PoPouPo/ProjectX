@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light" style=""><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Lilux Trading</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        --dark-bg: #0f0f23;
+        --card-bg: #1a1a2e;
+        --accent-color: #16213e;
+        --text-primary: #ffffff;
+        --text-secondary: #a0a0a0;
+        --success-color: #00ff88;
+        --danger-color: #ff4757;
+        --neon-blue: #00d4ff;
+        --neon-purple: #b19cd9;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: var(--dark-bg);
+        color: var(--text-primary);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        overflow-x: hidden;
+        min-height: 100vh;
+      }
+
+      /* Navigation Styles */
+      .navbar {
+        background: var(--primary-gradient) !important;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .logo-text {
+        font-size: 1.8rem;
+        font-weight: bold;
+        background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* Tab Navigation */
+      .nav-tabs {
+        border: none;
+        margin-bottom: 2rem;
+      }
+
+      .nav-tabs .nav-link {
+        background: transparent;
+        border: 2px solid transparent;
+        color: var(--text-secondary);
+        border-radius: 15px;
+        margin-right: 10px;
+        padding: 12px 20px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav-tabs .nav-link:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: var(--primary-gradient);
+        transition: all 0.3s ease;
+        z-index: -1;
+      }
+
+      .nav-tabs .nav-link:hover:before,
+      .nav-tabs .nav-link.active:before {
+        left: 0;
+      }
+
+      .nav-tabs .nav-link.active,
+      .nav-tabs .nav-link:hover {
+        color: var(--text-primary);
+        border-color: var(--neon-blue);
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+      }
+
+      /* Card Styles */
+      .modern-card {
+        background: var(--card-bg);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .modern-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      }
+
+      .modern-card:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--primary-gradient);
+      }
+
+      /* Statistics Cards */
+      .stat-card {
+        background: var(--card-bg);
+        border-radius: 15px;
+        padding: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .stat-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .stat-icon.primary {
+        background: var(--primary-gradient);
+      }
+      .stat-icon.success {
+        background: var(--success-gradient);
+      }
+      .stat-icon.danger {
+        background: var(--secondary-gradient);
+      }
+
+      /* Trading Form */
+      .trading-form {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .form-control,
+      .form-select {
+        background: var(--accent-color);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        color: var(--text-primary);
+        padding: 12px 15px;
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        background: var(--accent-color);
+        border-color: var(--neon-blue);
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+        color: var(--text-primary);
+      }
+
+      /* Buttons */
+      .btn-modern {
+        border-radius: 10px;
+        padding: 12px 25px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        border: none;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-buy {
+        background: linear-gradient(135deg, #00ff88, #00d4aa);
+        color: white;
+      }
+
+      .btn-sell {
+        background: linear-gradient(135deg, #ff4757, #ff3742);
+        color: white;
+      }
+
+      .btn-buy:hover,
+      .btn-sell:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Portfolio Table */
+      .portfolio-table {
+        background: var(--card-bg);
+        border-radius: 15px;
+        overflow: hidden;
+      }
+
+      .table-dark {
+        --bs-table-bg: transparent;
+      }
+
+      .table-dark th {
+        background: var(--accent-color);
+        border-color: rgba(255, 255, 255, 0.1);
+        color: var(--neon-blue);
+        font-weight: 600;
+      }
+
+      .table-dark td {
+        border-color: rgba(255, 255, 255, 0.1);
+        vertical-align: middle;
+      }
+
+      /* Price Change Indicators */
+      .price-up {
+        color: var(--success-color);
+      }
+
+      .price-down {
+        color: var(--danger-color);
+      }
+
+      /* Chart Container */
+      .chart-container {
+        position: relative;
+        height: 400px;
+        background: var(--card-bg);
+        border-radius: 15px;
+        padding: 1rem;
+      }
+
+      /* Order Book */
+      .order-book {
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .order-book::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .order-book::-webkit-scrollbar-track {
+        background: var(--accent-color);
+      }
+
+      .order-book::-webkit-scrollbar-thumb {
+        background: var(--neon-blue);
+        border-radius: 3px;
+      }
+
+      .order-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 12px;
+        margin: 2px 0;
+        border-radius: 5px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+      }
+
+      .buy-order {
+        background: rgba(0, 255, 136, 0.1);
+        border-left: 3px solid var(--success-color);
+      }
+
+      .sell-order {
+        background: rgba(255, 71, 87, 0.1);
+        border-left: 3px solid var(--danger-color);
+      }
+
+      /* Animations */
+      .fade-in {
+        animation: fadeIn 0.5s ease-in;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(0, 212, 255, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(0, 212, 255, 0);
+        }
+      }
+
+      /* Loading Spinner */
+      .loading-spinner {
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-top: 3px solid var(--neon-blue);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .container-fluid {
+          padding: 15px;
+        }
+
+        .stat-card {
+          margin-bottom: 1rem;
+        }
+
+        .nav-tabs .nav-link {
+          padding: 8px 12px;
+          font-size: 0.9rem;
+        }
+      }
+
+      /* Tab Content */
+      .tab-pane {
+        animation: fadeIn 0.3s ease-in;
+      }
+
+      /* Crypto Icons */
+      .crypto-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        margin-right: 10px;
+      }
+
+      /* Progress Bars */
+      .progress {
+        height: 8px;
+        border-radius: 10px;
+        background: var(--accent-color);
+      }
+
+      .progress-bar {
+        border-radius: 10px;
+      }
+    </style>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Open%20Sans:wght@400&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Noto%20Sans%20JP:wght@400&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&amp;display=swap" rel="stylesheet"></head>
+
+  <body style="">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1">
+          <span class="logo-text">Lilux</span>
+          <small class="text-light ms-2">Trading Dashboard</small>
+        </span>
+        <div class="navbar-nav ms-auto d-flex flex-row">
+          <span class="nav-link text-light me-3">
+            <i class="bi bi-person-circle me-2"></i>Bienvenue, {{ user.username }}
+          </span>
+          <a href="/logout" class="btn btn-outline-light btn-sm"> <i class="bi bi-box-arrow-right"></i> Déconnexion </a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid py-4">
+      <!-- Tab Navigation -->
+      <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-selected="false" tabindex="-1">
+            <i class="bi bi-speedometer2 me-2"></i>Vue d'ensemble
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="portfolio-tab" data-bs-toggle="tab" data-bs-target="#portfolio" type="button" role="tab" aria-selected="false" tabindex="-1">
+            <i class="bi bi-pie-chart me-2"></i>Portfolio
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="trading-tab" data-bs-toggle="tab" data-bs-target="#trading" type="button" role="tab" aria-selected="false" tabindex="-1">
+            <i class="bi bi-graph-up-arrow me-2"></i>Trading
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="transactions-tab" data-bs-toggle="tab" data-bs-target="#transactions" type="button" role="tab" aria-selected="true">
+            <i class="bi bi-list-ul me-2"></i>Transactions
+          </button>
+        </li>
+      </ul>
+
+      <!-- Tab Content -->
+      <div class="tab-content" id="dashboardTabContent">
+        <!-- Vue d'ensemble -->
+        <div class="tab-pane fade" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+          <!-- Statistics Cards -->
+          <div class="row mb-4">
+            <div class="col-lg-3 col-md-6 mb-3">
+              <div class="stat-card">
+                <div class="stat-icon primary">
+                  <i class="bi bi-wallet2"></i>
+                </div>
+                <h3 class="mb-1" id="totalBalance"></h3>
+                <p class="text-muted mb-0">Solde Total</p>
+                <small class="price-up"></small>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+              <div class="stat-card">
+                <div class="stat-icon success">
+                  <i class="bi bi-graph-up"></i>
+                </div>
+                <h3 class="mb-1" id="totalProfit"></h3>
+                <p class="text-muted mb-0">Profit Total</p>
+                <small class="price-up"></small>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+              <div class="stat-card">
+                <div class="stat-icon danger">
+                  <i class="bi bi-arrow-repeat"></i>
+                </div>
+                <h3 class="mb-1" id="totalTrades"></h3>
+                <p class="text-muted mb-0">Trades Aujourd'hui</p>
+                <small class="text-muted"></small>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+              <div class="stat-card">
+                <div class="stat-icon primary">
+                  <i class="bi bi-trophy"></i>
+                </div>
+                <h3 class="mb-1" id="successRate"></h3>
+                <p class="text-muted mb-0">Taux de Réussite</p>
+                <small class="price-up"></small>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- Main Chart -->
+            <div class="col-lg-8 mb-4">
+              <div class="modern-card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center bg-transparent border-0 p-3">
+                  <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Graphique des Prix</h5>
+                  <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-outline-primary active" onclick="updateChartTimeframe('1h')">
+                      1H
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" onclick="updateChartTimeframe('4h')">
+                      4H
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" onclick="updateChartTimeframe('1d')">
+                      1D
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" onclick="updateChartTimeframe('1w')">
+                      1W
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body p-3">
+                  <div class="chart-container">
+                    <canvas id="priceChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Top Gainers/Losers -->
+            <div class="col-lg-4 mb-4">
+              <div class="modern-card h-100">
+                <div class="card-header bg-transparent border-0 p-3">
+                  <h5 class="mb-0"><i class="bi bi-star me-2"></i>Top du Jour</h5>
+                </div>
+                <div class="card-body p-3">
+                  <div class="mb-3">
+                    <h6 class="text-success"><i class="bi bi-arrow-up-circle me-2"></i>Gagnants</h6>
+                    <div id="topGainers">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="d-flex align-items-center">
+                          <div class="crypto-icon bg-warning rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 24px; height: 24px; font-size: 12px">
+                            ₿
+                          </div>
+                          <span></span>
+                        </div>
+                        <span class="price-up">+5.67%</span>
+                      </div>
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="d-flex align-items-center">
+                          <div class="crypto-icon bg-info rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 24px; height: 24px; font-size: 12px">
+                            Ξ
+                          </div>
+                          <span>ETH</span>
+                        </div>
+                        <span class="price-up">+3.21%</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h6 class="text-danger"><i class="bi bi-arrow-down-circle me-2"></i>Perdants</h6>
+                    <div id="topLosers">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="d-flex align-items-center">
+                          <div class="crypto-icon bg-success rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 24px; height: 24px; font-size: 12px">
+                            A
+                          </div>
+                          <span>ADA</span>
+                        </div>
+                        <span class="price-down">-2.15%</span>
+                      </div>
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="d-flex align-items-center">
+                          <div class="crypto-icon bg-secondary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 24px; height: 24px; font-size: 12px">
+                            L
+                          </div>
+                          <span>LTC</span>
+                        </div>
+                        <span class="price-down">-1.88%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Portfolio -->
+        <div class="tab-pane fade" id="portfolio" role="tabpanel" aria-labelledby="portfolio-tab">
+          <div class="row">
+            <!-- Portfolio Distribution Chart -->
+            <div class="col-lg-4 mb-4">
+              <div class="modern-card">
+                <div class="card-header bg-transparent border-0 p-3">
+                  <h5 class="mb-0"><i class="bi bi-pie-chart me-2"></i>Répartition</h5>
+                </div>
+                <div class="card-body p-3">
+                  <canvas id="portfolioChart" style="max-height: 300px"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- Portfolio Holdings -->
+            <div class="col-lg-8 mb-4">
+              <div class="modern-card">
+                <div class="card-header bg-transparent border-0 p-3 d-flex justify-content-between align-items-center">
+                  <h5 class="mb-0"><i class="bi bi-briefcase me-2"></i>Mes Cryptomonnaies</h5>
+                  <button class="btn btn-outline-primary btn-sm" onclick="refreshPortfolio()">
+                    <i class="bi bi-arrow-clockwise"></i> Actualiser
+                  </button>
+                </div>
+                <div class="card-body p-0">
+                  <div class="table-responsive">
+                    <table class="table table-dark table-hover mb-0">
+                      <thead>
+                        <tr>
+                          <th>Crypto</th>
+                          <th>Quantité</th>
+                          <th>Prix</th>
+                          <th>Valeur</th>
+                          <th>24h %</th>
+                          <th>P&amp;L</th>
+                        </tr>
+                      </thead>
+                      <tbody id="portfolioTableBody">
+                        <!-- Dynamic content will be inserted here -->
+                        <tr>
+                          <td colspan="6" class="text-center py-4">
+                            <div class="loading-spinner mx-auto mb-3"></div>
+                            <p class="text-muted">Chargement du portfolio...</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trading -->
+        <div class="tab-pane fade" id="trading" role="tabpanel" aria-labelledby="trading-tab">
+          <div class="row">
+            <!-- Trading Form -->
+            <div class="col-lg-4 mb-4">
+              <div class="trading-form">
+                <h5 class="mb-4"><i class="bi bi-currency-exchange me-2"></i>Nouveau Trade</h5>
+                <form id="tradeForm">
+                  <div class="mb-3">
+                    <label class="form-label">Paire de Trading</label>
+                    <select class="form-select" id="tradePair" onchange="updatePairPrice()">
+                      <option value="BTCUSDT">BTC/USDT</option>
+                      <option value="ETHUSDT">ETH/USDT</option>
+                      <option value="ADAUSDT">ADA/USDT</option>
+                      <option value="BNBUSDT">BNB/USDT</option>
+                      <option value="SOLUSDT">SOL/USDT</option>
+                    </select>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Prix Actuel</label>
+                    <div class="form-control bg-secondary" id="currentPrice">$45 235,75</div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Type d'Ordre</label>
+                    <div class="btn-group d-flex" role="group">
+                      <input type="radio" class="btn-check" name="tradeType" id="buyBtn" value="BUY" checked="">
+                      <label class="btn btn-buy" for="buyBtn">
+                        <i class="bi bi-arrow-up-circle me-1"></i>Acheter
+                      </label>
+
+                      <input type="radio" class="btn-check" name="tradeType" id="sellBtn" value="SELL">
+                      <label class="btn btn-sell" for="sellBtn">
+                        <i class="bi bi-arrow-down-circle me-1"></i>Vendre
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Quantité</label>
+                    <input type="number" class="form-control" id="tradeAmount" step="0.00001" min="0" placeholder="0.00">
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Prix Limite</label>
+                    <input type="number" class="form-control" id="tradePrice" step="0.01" min="0" placeholder="Prix du marché">
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Valeur Totale</label>
+                    <div class="form-control bg-secondary" id="totalValue">$0,00</div>
+                  </div>
+
+                  <button type="submit" class="btn btn-modern btn-buy w-100 mb-3">
+                    <i class="bi bi-lightning me-2"></i>Placer l'Ordre
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Order Book -->
+            <div class="col-lg-4 mb-4">
+              <div class="modern-card">
+                <div class="card-header bg-transparent border-0 p-3">
+                  <h5 class="mb-0"><i class="bi bi-book me-2"></i>Carnet d'Ordres</h5>
+                </div>
+                <div class="card-body p-3">
+                  <div class="order-book" id="orderBook">
+                    <!-- Sell Orders -->
+                    <div class="mb-3">
+                      <h6 class="text-danger mb-2">Ordres de Vente</h6>
+                      <div class="sell-order order-row">
+                        <span>45,250.00</span>
+                        <span>0.15423</span>
+                      </div>
+                      <div class="sell-order order-row">
+                        <span>45,245.50</span>
+                        <span>0.25634</span>
+                      </div>
+                      <div class="sell-order order-row">
+                        <span>45,240.00</span>
+                        <span>0.34521</span>
+                      </div>
+                    </div>
+
+                    <!-- Current Price -->
+                    <div class="text-center py-2 mb-3" style="border-top: 1px solid var(--neon-blue); border-bottom: 1px solid var(--neon-blue)">
+                      <strong class="text-primary" id="spreadPrice">45,235.75 USDT</strong>
+                    </div>
+
+                    <!-- Buy Orders -->
+                    <div>
+                      <h6 class="text-success mb-2">Ordres d'Achat</h6>
+                      <div class="buy-order order-row">
+                        <span>45,230.00</span>
+                        <span>0.18923</span>
+                      </div>
+                      <div class="buy-order order-row">
+                        <span>45,225.50</span>
+                        <span>0.29384</span>
+                      </div>
+                      <div class="buy-order order-row">
+                        <span>45,220.00</span>
+                        <span>0.42156</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Market Data -->
+            <div class="col-lg-4 mb-4">
+              <div class="modern-card">
+                <div class="card-header bg-transparent border-0 p-3">
+                  <h5 class="mb-0"><i class="bi bi-graph-up-arrow me-2"></i>Données du Marché</h5>
+                </div>
+                <div class="card-body p-3">
+                  <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-2">
+                      <span class="text-muted">Volume 24h:</span>
+                      <span id="volume24h">1,234,567 BTC</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span class="text-muted">Plus Haut 24h:</span>
+                      <span class="price-up" id="high24h">$46,850</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span class="text-muted">Plus Bas 24h:</span>
+                      <span class="price-down" id="low24h">$44,120</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span class="text-muted">Variation 24h:</span>
+                      <span class="price-up" id="change24h">+2.45%</span>
+                    </div>
+                  </div>
+
+                  <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <small>Les prix sont mis à jour en temps réel via l'API Binance</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Transactions -->
+        <div class="tab-pane fade active show" id="transactions" role="tabpanel" aria-labelledby="transactions-tab">
+          <div class="modern-card">
+            <div class="card-header bg-transparent border-0 p-3 d-flex justify-content-between align-items-center">
+              <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i>Historique des Transactions</h5>
+              <div class="d-flex gap-2">
+                <select class="form-select form-select-sm" style="width: auto" id="statusFilter">
+                  <option value="">Tous les statuts</option>
+                  <option value="completed">Complété</option>
+                  <option value="pending">En attente</option>
+                  <option value="cancelled">Annulé</option>
+                </select>
+                <button class="btn btn-outline-primary btn-sm" onclick="refreshTransactions()">
+                  <i class="bi bi-arrow-clockwise"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-dark table-hover mb-0">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Paire</th>
+                      <th>Type</th>
+                      <th>Quantité</th>
+                      <th>Prix</th>
+                      <th>Total</th>
+                      <th>Statut</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="transactionsTableBody">
+                    <!-- Sample transactions -->
+                    <tr>
+                      <td>2024-01-15 14:30</td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <div class="crypto-icon bg-warning rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 24px; height: 24px; font-size: 12px">
+                            ₿
+                          </div>
+                          BTC/USDT
+                        </div>
+                      </td>
+                      <td><span class="badge bg-success">ACHAT</span></td>
+                      <td>0.05420</td>
+                      <td>$45,235.75</td>
+                      <td>$2,451.78</td>
+                      <td><span class="badge bg-success">Complété</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-info">
+                          <i class="bi bi-eye"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>2024-01-15 12:15</td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <div class="crypto-icon bg-info rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 24px; height: 24px; font-size: 12px">
+                            Ξ
+                          </div>
+                          ETH/USDT
+                        </div>
+                      </td>
+                      <td><span class="badge bg-danger">VENTE</span></td>
+                      <td>1.25000</td>
+                      <td>$2,845.30</td>
+                      <td>$3,556.63</td>
+                      <td><span class="badge bg-success">Complété</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-info">
+                          <i class="bi bi-eye"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>2024-01-15 10:45</td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <div class="crypto-icon bg-success rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 24px; height: 24px; font-size: 12px">
+                            A
+                          </div>
+                          ADA/USDT
+                        </div>
+                      </td>
+                      <td><span class="badge bg-success">ACHAT</span></td>
+                      <td>1000.00</td>
+                      <td>$0.485</td>
+                      <td>$485.00</td>
+                      <td><span class="badge bg-warning">En attente</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-danger">
+                          <i class="bi bi-x-circle"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 p-3">
+              <nav>
+                <ul class="pagination pagination-sm mb-0 justify-content-center">
+                  <li class="page-item disabled">
+                    <a class="page-link" href="#">Précédent</a>
+                  </li>
+                  <li class="page-item active">
+                    <a class="page-link" href="#">1</a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link" href="#">2</a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link" href="#">3</a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link" href="#">Suivant</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      // Global variables
+      let priceChart;
+      let portfolioChart;
+      let currentPair = 'BTCUSDT';
+      let portfolioData = [];
+
+      // Initialize dashboard
+      document.addEventListener('DOMContentLoaded', function () {
+        console.log('Initializing Lilux Trading Dashboard...');
+        initializeCharts();
+        loadPortfolioData();
+        startRealTimeUpdates();
+        setupFormHandlers();
+      });
+
+      // Initialize Charts
+      function initializeCharts() {
+        // Price Chart
+        const priceCtx = document.getElementById('priceChart').getContext('2d');
+        priceChart = new Chart(priceCtx, {
+          type: 'line',
+          data: {
+            labels: generateTimeLabels(),
+            datasets: [
+              {
+                label: 'BTC/USDT',
+                data: generateMockPriceData(),
+                borderColor: '#00d4ff',
+                backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                labels: {
+                  color: '#ffffff',
+                },
+              },
+            },
+            scales: {
+              x: {
+                ticks: { color: '#a0a0a0' },
+                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+              },
+              y: {
+                ticks: { color: '#a0a0a0' },
+                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+              },
+            },
+          },
+        });
+
+        // Portfolio Chart
+        const portfolioCtx = document.getElementById('portfolioChart').getContext('2d');
+        portfolioChart = new Chart(portfolioCtx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Bitcoin', 'Ethereum', 'Cardano', 'BNB'],
+            datasets: [
+              {
+                data: [45, 25, 20, 10],
+                backgroundColor: ['#f7931a', '#627eea', '#0033ad', '#f3ba2f'],
+                borderWidth: 0,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: {
+                  color: '#ffffff',
+                  padding: 20,
+                },
+              },
+            },
+          },
+        });
+      }
+
+      // Load Portfolio Data from Binance API
+      async function loadPortfolioData() {
+        try {
+          // Simulated API call - replace with actual Binance API integration
+          const mockPortfolio = [
+            {
+              symbol: 'BTC',
+              name: 'Bitcoin',
+              balance: '0.12450000',
+              price: 45235.75,
+              change24h: 2.45,
+              value: 5634.45,
+            },
+            {
+              symbol: 'ETH',
+              name: 'Ethereum',
+              balance: '2.75000000',
+              price: 2845.3,
+              change24h: -1.23,
+              value: 7824.58,
+            },
+            {
+              symbol: 'ADA',
+              name: 'Cardano',
+              balance: '1500.00000000',
+              price: 0.485,
+              change24h: 0.87,
+              value: 727.5,
+            },
+            {
+              symbol: 'BNB',
+              name: 'Binance Coin',
+              balance: '5.25000000',
+              price: 245.8,
+              change24h: 1.56,
+              value: 1290.45,
+            },
+          ];
+
+          portfolioData = mockPortfolio;
+          updatePortfolioDisplay();
+          updateStatistics();
+        } catch (error) {
+          console.error('Error loading portfolio:', error);
+        }
+      }
+
+      // Update Portfolio Display
+      function updatePortfolioDisplay() {
+        const tbody = document.getElementById('portfolioTableBody');
+        if (!tbody) return;
+
+        tbody.innerHTML = '';
+
+        portfolioData.forEach((asset) => {
+          const row = document.createElement('tr');
+          const changeClass = asset.change24h >= 0 ? 'price-up' : 'price-down';
+          const changeIcon = asset.change24h >= 0 ? 'bi-arrow-up' : 'bi-arrow-down';
+
+          row.innerHTML = `
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="crypto-icon bg-warning rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 14px;">
+                                ${asset.symbol.charAt(0)}
+                            </div>
+                            <div>
+                                <div class="fw-bold">${asset.symbol}</div>
+                                <small class="text-muted">${asset.name}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${parseFloat(asset.balance).toFixed(6)}</td>
+                    <td>$${asset.price.toLocaleString('fr-FR', { minimumFractionDigits: 2 })}</td>
+                    <td class="fw-bold">$${asset.value.toLocaleString('fr-FR', { minimumFractionDigits: 2 })}</td>
+                    <td class="${changeClass}">
+                        <i class="bi ${changeIcon} me-1"></i>
+                        ${asset.change24h > 0 ? '+' : ''}${asset.change24h.toFixed(2)}%
+                    </td>
+                    <td class="${changeClass}">
+                        ${asset.change24h > 0 ? '+' : ''}$${((asset.value * asset.change24h) / 100).toFixed(2)}
+                    </td>
+                `;
+          tbody.appendChild(row);
+        });
+      }
+
+      // Update Statistics
+      function updateStatistics() {
+        const totalBalance = portfolioData.reduce((sum, asset) => sum + asset.value, 0);
+        const totalProfit = portfolioData.reduce((sum, asset) => sum + (asset.value * asset.change24h) / 100, 0);
+
+        document.getElementById('totalBalance').textContent =
+          `$${totalBalance.toLocaleString('fr-FR', { minimumFractionDigits: 2 })}`;
+        document.getElementById('totalProfit').textContent =
+          `$${totalProfit.toLocaleString('fr-FR', { minimumFractionDigits: 2 })}`;
+      }
+
+      // Setup Form Handlers
+      function setupFormHandlers() {
+        // Trade form
+        const tradeForm = document.getElementById('tradeForm');
+        if (tradeForm) {
+          tradeForm.addEventListener('submit', handleTradeSubmit);
+        }
+
+        // Amount and price inputs for real-time calculation
+        const amountInput = document.getElementById('tradeAmount');
+        const priceInput = document.getElementById('tradePrice');
+
+        if (amountInput && priceInput) {
+          [amountInput, priceInput].forEach((input) => {
+            input.addEventListener('input', calculateTotalValue);
+          });
+        }
+      }
+
+      // Handle Trade Submit
+      function handleTradeSubmit(event) {
+        event.preventDefault();
+
+        const formData = {
+          pair: document.getElementById('tradePair').value,
+          type: document.querySelector('input[name="tradeType"]:checked').value,
+          amount: document.getElementById('tradeAmount').value,
+          price: document.getElementById('tradePrice').value,
+        };
+
+        console.log('Placing order:', formData);
+
+        // Here you would integrate with Binance API
+        // For now, show success message
+        alert(`Ordre ${formData.type} placé avec succès pour ${formData.amount} ${formData.pair.replace('USDT', '')}`);
+
+        // Reset form
+        document.getElementById('tradeForm').reset();
+        document.getElementById('totalValue').textContent = '$0.00';
+      }
+
+      // Calculate Total Value
+      function calculateTotalValue() {
+        const amount = parseFloat(document.getElementById('tradeAmount').value) || 0;
+        const price = parseFloat(document.getElementById('tradePrice').value) || 0;
+        const total = amount * price;
+
+        document.getElementById('totalValue').textContent =
+          `$${total.toLocaleString('fr-FR', { minimumFractionDigits: 2 })}`;
+      }
+
+      // Update Pair Price
+      function updatePairPrice() {
+        const pair = document.getElementById('tradePair').value;
+        // Simulate price fetch from Binance API
+        const mockPrices = {
+          BTCUSDT: 45235.75,
+          ETHUSDT: 2845.3,
+          ADAUSDT: 0.485,
+          BNBUSDT: 245.8,
+          SOLUSDT: 98.45,
+        };
+
+        const price = mockPrices[pair] || 0;
+        document.getElementById('currentPrice').textContent =
+          `$${price.toLocaleString('fr-FR', { minimumFractionDigits: 2 })}`;
+        document.getElementById('tradePrice').value = price;
+        calculateTotalValue();
+      }
+
+      // Update Chart Timeframe
+      function updateChartTimeframe(timeframe) {
+        console.log('Updating chart timeframe:', timeframe);
+        // Update chart data based on timeframe
+        // This would integrate with Binance API for real data
+
+        // Update button states
+        document.querySelectorAll('.btn-group .btn').forEach((btn) => {
+          btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+      }
+
+      // Generate Mock Data
+      function generateTimeLabels() {
+        const labels = [];
+        for (let i = 23; i >= 0; i--) {
+          const time = new Date(Date.now() - i * 60 * 60 * 1000);
+          labels.push(time.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }));
+        }
+        return labels;
+      }
+
+      function generateMockPriceData() {
+        const basePrice = 45000;
+        const data = [];
+        let currentPrice = basePrice;
+
+        for (let i = 0; i < 24; i++) {
+          currentPrice += (Math.random() - 0.5) * 1000;
+          data.push(currentPrice);
+        }
+
+        return data;
+      }
+
+      // Start Real-time Updates
+      function startRealTimeUpdates() {
+        // Update prices every 5 seconds
+        setInterval(() => {
+          updatePairPrice();
+          // Update other real-time data
+        }, 5000);
+      }
+
+      // Refresh Functions
+      function refreshPortfolio() {
+        console.log('Refreshing portfolio...');
+        loadPortfolioData();
+      }
+
+      function refreshTrades() {
+        console.log('Refreshing trades...');
+        // Implement trade refresh logic
+      }
+
+      function refreshTransactions() {
+        console.log('Refreshing transactions...');
+        // Implement transaction refresh logic
+      }
+
+      // Initialize on page load
+      updatePairPrice();
+    </script>
+  
+
+</body></html>

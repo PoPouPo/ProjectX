@@ -1,0 +1,61 @@
+.
+|-- ETAPES.md
+|-- Lilux
+|-- README.md
+|-- eslint.config.js
+|-- index.html
+|-- lilux_app
+|   |-- __init__.py
+|   |-- backend
+|   |   |-- DIAG.PY
+|   |   |-- __init__.py
+|   |   |-- auth.py
+|   |   |-- binance_service.py
+|   |   |-- config.py
+|   |   |-- data_manager.py
+|   |   |-- database.py
+|   |   |-- lilux_app.db
+|   |   |-- live_bot.py
+|   |   |-- main.py
+|   |   |-- routes
+|   |   |   |-- __init__.py
+|   |   |   `-- dashboard.py
+|   |   `-- visu_bot.py
+|   |-- frontend
+|   |   |-- static
+|   |   |   |-- css
+|   |   |   |   `-- style.css
+|   |   |   |-- favicon.ico
+|   |   |   `-- js
+|   |   |       |-- main.js
+|   |   |       |-- overview.js
+|   |   |       |-- portfolio.js
+|   |   |       |-- trading.js
+|   |   |       `-- transactions.js
+|   |   `-- templates
+|   |       |-- DASH.html
+|   |       |-- base.html
+|   |       |-- dashboard.html
+|   |       `-- login.html
+|   |-- lilux_app.db
+|   `-- tests
+|       |-- __init__.py
+|       `-- test_auth.py
+|-- lilux_app.db
+|-- package-lock.json
+|-- package.json
+|-- postcss.config.js
+|-- requirements.txt
+|-- run.py
+|-- src
+|   |-- App.tsx
+|   |-- index.css
+|   |-- main.tsx
+|   `-- vite-env.d.ts
+|-- tailwind.config.js
+|-- tree.txt
+|-- tsconfig.app.json
+|-- tsconfig.json
+|-- tsconfig.node.json
+`-- vite.config.ts
+
